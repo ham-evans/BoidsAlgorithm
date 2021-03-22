@@ -1,12 +1,14 @@
 import pygame
 import random
 from math import sqrt
+from copy import deepcopy
+from operator import attrgetter
 
-pygame.init()
+#pygame.init()
 
 width = 500
 height = 500
-numBoids = 2
+numBoids = 3
 visualRange = 75.0
 boids = []
 
@@ -18,10 +20,10 @@ class Boid:
         self.dx = (random.random() * 10) - 5
         self.dy = (random.random() * 10) - 5
         self.history = []
+        self.distanceFrom = 0
 
     def coords(self):
         return self.x, self.y
-
 
 def initPositions ():
     for i in range(numBoids):
@@ -32,8 +34,17 @@ def distance (a, b):
     b = b - 1
     return sqrt(((boids[a].x - boids[b].x)**2) + ((boids[a].y - boids[b].y)**2))
 
-screen = pygame.display.set_mode([width, height])
+def nClosest (boidNum, n):
+    for i in range(len(boids)):
+        boids[i].distanceFrom = distance(boidNum, i)
+
+    closest = sorted(boids, key=lambda boid: boid.distanceFrom)
+    return closest[1:n+1]
+
+
+
+
+#screen = pygame.display.set_mode([width, height])
 
 initPositions()
-print(boids[0].coords(), boids[1].coords())
-print(distance(1, 2))
+print(nClosest(0,2))
