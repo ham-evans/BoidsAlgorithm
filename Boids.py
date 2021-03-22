@@ -4,7 +4,7 @@ from math import sqrt
 from copy import deepcopy
 from operator import attrgetter
 
-#pygame.init()
+pygame.init()
 
 width = 500
 height = 500
@@ -23,7 +23,7 @@ class Boid:
         self.distanceFrom = 0
 
     def coords(self):
-        return self.x, self.y
+        return (self.x, self.y)
 
 def initPositions ():
     for i in range(numBoids):
@@ -39,7 +39,7 @@ def nClosest (currBoid, n):
     return closest[1:n+1]
 
 def keepWithinBounds (currBoid):
-    margin = 490
+    margin = width-10
     turnFactor = 1
 
     if currBoid.x < margin:
@@ -48,10 +48,10 @@ def keepWithinBounds (currBoid):
     if currBoid.x > width-margin:
         currBoid.dx -= turnFactor
 
-    if currBoid.y < margin
+    if currBoid.y < margin:
       currBoid.dy += turnFactor
 
-    if currBoid.y > height - margin
+    if currBoid.y > height - margin:
       currBoid.dy -= turnFactor
 
 
@@ -122,10 +122,20 @@ def speedLimit (currBoid):
 
 
 
+screen = pygame.display.set_mode([width, height])
 
+running = True
+while running:
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            running = False
 
+    screen.fill((0, 0, 0))
 
-#screen = pygame.display.set_mode([width, height])
+    pygame.draw.circle(screen, (255, 255, 255), (250, 250), 3)
 
-initPositions()
-print(nClosest(0,2))
+    # Flip the display
+    pygame.display.flip()
+
+# Done! Time to quit.
+pygame.quit()
