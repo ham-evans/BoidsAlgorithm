@@ -29,95 +29,96 @@ def initPositions ():
     for i in range(numBoids):
         boids.append(Boid(i))
 
-def distance (a, b):
-    a = a - 1
-    b = b - 1
-    return sqrt(((boids[a].x - boids[b].x)**2) + ((boids[a].y - boids[b].y)**2))
+def distance (boidA, boidB):
+    return sqrt(((boidA.x - boidB.x)**2) + ((boidA.y - boidB.y)**2))
 
-def nClosest (boidNum, n):
-    for i in range(len(boids)):
-        boids[i].distanceFrom = distance(boidNum, i)
-    closest = sorted(boids, key=lambda boid: boid.distanceFrom)
+def nClosest (currBoid, n):
+    for boid in boids:
+        boid.distanceFrom = distance(currBoid, boid)
+    closest = sorted(boids, key=lambda allBoid: allBoid.distanceFrom)
     return closest[1:n+1]
 
-def keepWithinBounds (boidNum):
+def keepWithinBounds (currBoid):
     margin = 490
     turnFactor = 1
 
-    if boidNum.x < margin:
-        boidNum.dx += turnFactor
+    if currBoid.x < margin:
+        currBoid.dx += turnFactor
 
-    if boidNum.x > width-margin:
-        boidNum.dx -= turnFactor
+    if currBoid.x > width-margin:
+        currBoid.dx -= turnFactor
 
-    if boidNum.y < margin
-      boidNum.dy += turnFactor
+    if currBoid.y < margin
+      currBoid.dy += turnFactor
 
-    if boidNum.y > height - margin
-      boidNum.dy -= turnFactor
+    if currBoid.y > height - margin
+      currBoid.dy -= turnFactor
 
-def flyToCenter (boidNum):
+
+def flyToCenter (currBoid):
     centeringFactor = 0.005 # Adjust velo here
     centerX = 0
     centerY = 0
     numNeighbors = 0
 
-    for i in range(numBoids):
-        if i != boidNum:
-            if distance(boidNum, i) < visualRange:
-                centerX += boids[i].x
-                centerY += boids[i].y
+    for boid in boids:
+        if boid != currBoid:
+            if distance(currBoid, boid) < visualRange:
+                centerX += boid.x
+                centerY += boid.y
                 numNeighbors += 1
 
     if numNeighbors != 0:
         centerX = centerX / numNeighbors
         centerY = centerY / numNeighbors
 
-        boids[boidNum].dx += (centerX - boids[boidNum].x) * centeringFactor
-        boids[boidNum].dy += (centerY - boids[boidNum].y) * centeringFactor
+        currBoid.dx += (centerX - currBoid.x) * centeringFactor
+        currBoid.dy += (centerY - currBoid.y) * centeringFactor
 
-def avoidOthers (boidNum):
+def avoidOthers (currBoid):
     minDistance = 20
     avoidFactor = 0.05 # Adjust velo here
     moveX = 0
     moveY = 0
 
-    for i in range(numBoids):
-        if i != boidNum:
-            if distance(boidNum, i) < minDistance:
-                moveX += boids[boidNum].x - boids[i].x
-                moveY += boids[boidNum].y - boids[i].y
+    for boid in boids:
+        if boid != currBoid:
+            if distance(currBoid, boid) < minDistance:
+                moveX += currBoid.x - boid.x
+                moveY += currBoid.y - boid.y
 
-    boids[boidNum].dx += moveX * avoidFactor
-    boids[boidNum].dy += moveY * avoidFactor
+    currBoid.dx += moveX * avoidFactor
+    currBoid.dy += moveY * avoidFactor
 
-def matchVelocity (boidNum):
+def matchVelocity (currBoid):
     matchingFactor = 0.05 # adjust by % of avg velo
 
     avgDX = 0
     avgDY = 0
     numNeighbors = 0
 
-    for i in range(numBoids):
-        if distance(boidNum, i) < visualRange:
-            avgDX += boids[i].dx
-            avgDY += boids[i].dy
+    for boid in boids:
+        if distance(currBoid, boid) < visualRange:
+            avgDX += boid.dx
+            avgDY += boid.dy
             numNeighbors += 1
 
     if numNeighbors != 0:
         avgDX = avgDX / numNeighbors
         avgDY = avgDY / numNeighbors
 
-        boids[boidNum].dx += (avgDX - boids[boidNum].dx) * matchingFactor
-        boids[boidNum].dy += (avgDY - boids[boidNum].dy) * matchingFactor
+        currBoid.dx += (avgDX - currBoid.dx) * matchingFactor
+        currBoid.dy += (avgDY - currBoid.dy) * matchingFactor
 
-def speedLimit (boidNum):
+def speedLimit (currBoid):
     speedLimit = 15
-    speed = sqrt((boids[boidNum].dx)**2 + (boids[boidNum].dy)**2)
+    speed = sqrt((currBoid.dx)**2 + (currBoid.dy)**2)
 
     if speed > speedLimit:
-        (boids[boidNum].dx) = (boids[boidNum].dx / speed) * speedLimit
-        (boids[boidNum].dy) = (boids[boidNum].dy / speed) * speedLimit
+        (currBoid.dx) = (currBoid.dx / speed) * speedLimit
+        (currBoid.dy) = (currBoid.dy / speed) * speedLimit
+
+
 
 
 
