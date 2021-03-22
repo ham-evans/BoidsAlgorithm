@@ -8,15 +8,16 @@ pygame.init()
 
 width = 500
 height = 500
-numBoids = 3
+numBoids = 25
+
 visualRange = 75.0
 boids = []
 
 class Boid:
     def __init__(self, number):
         self.number = number
-        self.x = random.randint(width, width+100)
-        self.y = random.randint(height, height+100)
+        self.x = random.randint(-width-100, width+100)
+        self.y = random.randint(-height-100, height+100)
         self.dx = (random.random() * 10) - 5
         self.dy = (random.random() * 10) - 5
         self.history = []
@@ -39,8 +40,8 @@ def nClosest (currBoid, n):
     return closest[1:n+1]
 
 def keepWithinBounds (currBoid):
-    margin = width-10
-    turnFactor = 1
+    margin = width-25
+    turnFactor = 2
 
     if currBoid.x < margin:
         currBoid.dx += turnFactor
@@ -111,18 +112,23 @@ def matchVelocity (currBoid):
         currBoid.dy += (avgDY - currBoid.dy) * matchingFactor
 
 def speedLimit (currBoid):
-    speedLimit = 15
+    speedLimit = 12
     speed = sqrt((currBoid.dx)**2 + (currBoid.dy)**2)
 
     if speed > speedLimit:
         (currBoid.dx) = (currBoid.dx / speed) * speedLimit
         (currBoid.dy) = (currBoid.dy / speed) * speedLimit
 
-
-
+"""class MySprite (pygame.sprite.Sprite):
+    def __init__(self):
+        super(MySprite, self).__init__()
+"""
 
 
 screen = pygame.display.set_mode([width, height])
+
+
+initPositions()
 
 running = True
 while running:
@@ -132,9 +138,23 @@ while running:
 
     screen.fill((0, 0, 0))
 
-    pygame.draw.circle(screen, (255, 255, 255), (250, 250), 3)
+    for boid in boids:
+        flyToCenter(boid)
+        avoidOthers(boid)
+        matchVelocity(boid)
+        speedLimit(boid)
+        keepWithinBounds(boid)
 
-    # Flip the display
+        boid.x += boid.dx
+        boid.y += boid.dy
+        boid.history.append([boid.x, boid.y])
+        boid.history = boid.history[-50:]
+
+        pygame.draw.circle(screen, (255, 255, 255), boid.coords(), 3)
+
+    pygame.display.update()
+
+
     pygame.display.flip()
 
 # Done! Time to quit.
