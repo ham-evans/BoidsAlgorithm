@@ -118,7 +118,7 @@ def matchVelocity (currBoid):
         currBoid.dy += (avgDY - currBoid.dy) * matchingFactor
 
 def speedLimit (currBoid):
-    speedLimit = 20
+    speedLimit = 10
     speed = math.sqrt((currBoid.dx)**2 + (currBoid.dy)**2)
 
     if speed > speedLimit:
@@ -130,6 +130,7 @@ def randomColor():
 
 def colorChange(currBoid):
     #closest = nClosest (currBoid, 1)
+    adjustNum = 15
     avgColor1 = 0
     avgColor2 = 0
     avgColor3 = 0
@@ -149,20 +150,20 @@ def colorChange(currBoid):
         avgColor2 = avgColor2 / numNeighbors
         avgColor3 = avgColor3 / numNeighbors
 
-        if avgColor1 > currBoid.selfColor[0]:
-            avgColor1 = avgColor1 - 15
-        else:
-            avgColor1 = avgColor1 + 15
+        if avgColor1 > currBoid.selfColor[0] and avgColor1 > 0 + adjustNum:
+            avgColor1 = avgColor1 - adjustNum
+        elif avgColor1 < currBoid.selfColor[0] and avgColor1 < 255 - adjustNum:
+            avgColor1 = avgColor1 + adjustNum
 
-        if avgColor2 > currBoid.selfColor[1]:
-            avgColor2 = avgColor2 - 15
-        else:
-            avgColor2 = avgColor2 + 15
+        if avgColor2 > currBoid.selfColor[1] and avgColor2 > 0 + adjustNum:
+            avgColor2 = avgColor2 - adjustNum
+        elif avgColor2 < currBoid.selfColor[0] and avgColor2 < 255 - adjustNum:
+            avgColor2 = avgColor2 + adjustNum
 
-        if avgColor3 > currBoid.selfColor[2]:
-            avgColor3 = avgColor3 - 15
-        else:
-            avgColor3 = avgColor3 + 15
+        if avgColor3 > currBoid.selfColor[2] and avgColor3 > 0 + adjustNum:
+            avgColor3 = avgColor3 - adjustNum
+        elif avgColor3 < currBoid.selfColor[0] and avgColor3 < 255 - adjustNum:
+            avgColor3 = avgColor3 + adjustNum
 
 
         currBoid.color = (avgColor1, avgColor2, avgColor3)
