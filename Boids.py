@@ -10,7 +10,7 @@ width = 800
 height = 800
 numBoids = 100
 
-visualRange = 75.0
+visualRange = 30
 boids = []
 
 class Boid:
