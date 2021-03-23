@@ -1,14 +1,14 @@
 import pygame
 import random
-from math import sqrt
+import math
 from copy import deepcopy
 from operator import attrgetter
 
 pygame.init()
 
-width = 500
-height = 500
-numBoids = 25
+width = 800
+height = 800
+numBoids = 100
 
 visualRange = 75.0
 boids = []
@@ -22,6 +22,7 @@ class Boid:
         self.dy = (random.random() * 10) - 5
         self.history = []
         self.distanceFrom = 0
+        self.color = randomColor()
 
     def coords(self):
         return (self.x, self.y)
@@ -31,7 +32,7 @@ def initPositions ():
         boids.append(Boid(i))
 
 def distance (boidA, boidB):
-    return sqrt(((boidA.x - boidB.x)**2) + ((boidA.y - boidB.y)**2))
+    return math.sqrt(((boidA.x - boidB.x)**2) + ((boidA.y - boidB.y)**2))
 
 def nClosest (currBoid, n):
     for boid in boids:
@@ -112,18 +113,15 @@ def matchVelocity (currBoid):
         currBoid.dy += (avgDY - currBoid.dy) * matchingFactor
 
 def speedLimit (currBoid):
-    speedLimit = 12
-    speed = sqrt((currBoid.dx)**2 + (currBoid.dy)**2)
+    speedLimit = 10
+    speed = math.sqrt((currBoid.dx)**2 + (currBoid.dy)**2)
 
     if speed > speedLimit:
         (currBoid.dx) = (currBoid.dx / speed) * speedLimit
         (currBoid.dy) = (currBoid.dy / speed) * speedLimit
 
-"""class MySprite (pygame.sprite.Sprite):
-    def __init__(self):
-        super(MySprite, self).__init__()
-"""
-
+def randomColor():
+    return (random.randint(0,255), random.randint(0,255), random.randint(0,255))
 
 screen = pygame.display.set_mode([width, height])
 
@@ -150,12 +148,12 @@ while running:
         boid.history.append([boid.x, boid.y])
         boid.history = boid.history[-50:]
 
-        pygame.draw.circle(screen, (255, 255, 255), boid.coords(), 3)
+        pygame.draw.circle(screen, boid.color, boid.coords(), 3)
 
     pygame.display.update()
 
 
     pygame.display.flip()
 
-# Done! Time to quit.
+
 pygame.quit()
